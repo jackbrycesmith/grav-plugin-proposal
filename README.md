@@ -46,7 +46,7 @@ Now you'll be able to **write your proposals in markdown** (`proposal.md`) that 
 ### Template features
 
   - table of contents (inc. smooth scroll to sections) generated from `##` `###` section headings in your proposal
-  - images/video can stretch to full witdth (medium.com-esque) 
+  - images/video can stretch to full width (medium.com-esque) 
   - uses system fonts for performance
   - `>` make quotes that stand out
   - highlight important points with `<mark>Important Point</mark>`
@@ -54,7 +54,7 @@ Now you'll be able to **write your proposals in markdown** (`proposal.md`) that 
 ### Proposal options
 
 - Select an image to cover the opening section
-- Decide how much of a deposit you want the client to make to accept the proposal  deposit amount in the frontmatter `deposit: 700`
+- Decide how much of a deposit you want the client to make to accept the proposal in the page frontmatter e.g. `deposit: 700`
 - Choose who you want to be able to access the page, thanks to the [Login plugin](https://github.com/getgrav/grav-plugin-login)
 
 ![proposal-options-screenshot](https://user-images.githubusercontent.com/13235268/31609153-e7415828-b26a-11e7-9a36-8029e25107d3.png)
