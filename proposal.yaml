@@ -1,0 +1,6 @@
+enabled: true
+pay_route: /proposal-pay-deposit
+stripe_public_key: ''
+stripe_secret_key: ''
+stripe_country: GB
+stripe_currency: gbp

@@ -1,0 +1,50 @@
+name: Proposal
+version: 1.0.0
+description: "[Create online sales proposals for free](https://github.com/jackbrycesmith/grav-plugin-proposal) & let the recipient accept by paying a 💳 deposit with Stripe."
+icon: briefcase
+author:
+  name: Jack Bryce-Smith
+  email: mail@markage.uk
+  url: https://markage.uk
+homepage: https://github.com/jackbrycesmith/grav-plugin-proposal
+keywords: grav, plugin, proposal, sales, markdown, stripe
+bugs: https://github.com/jackbrycesmith/grav-plugin-proposal/issues
+docs: https://github.com/jackbrycesmith/grav-plugin-proposal/blob/develop/README.md
+license: MIT
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin Status
+      highlight: 1
+      default: 0
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
+    stripe_public_key:
+      type: text
+      label: Stripe Public Key 🔑
+      help: Find this in your account at dashboard.stripe.com
+      validate:
+        type: string
+    stripe_secret_key:
+      type: password
+      label: Stripe Secret Key 🔐
+      help: Copy this from your account at dashboard.stripe.com
+      validate:
+        type: string
+    stripe_country:
+      type: text
+      label: Country Code 🌍
+      validate:
+        type: string
+    stripe_currency:
+      type: text
+      label: Currency Code 💸
+      validate:
+        type: string
+      

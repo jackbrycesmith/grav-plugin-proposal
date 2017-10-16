@@ -1,0 +1,142 @@
+{% spaceless %}
+<!doctype html>
+<html lang="en">
+<head>
+  {% block head %}
+  <meta charset="utf-8">
+  <title>{% if header.title %}{{ header.title|e('html') }} | {% endif %}{{ site.title|e('html') }}</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="{{ url('plugin://proposal/assets/favicon.png') }}" />
+
+  {% block stylesheets %}
+    <link rel="stylesheet" href="{{ url('plugin://proposal/assets/proposal.css') }}">
+    <link rel="stylesheet" href="{{ url('plugin://proposal/assets/tocbot.css') }}">
+    {# Uncomment this & comment out stylesheets above if you want some slightly faster renders 
+    {% do assets.addCss('plugin://proposal/assets/proposal.css') %}
+    {% do assets.addCss('plugin://proposal/assets/tocbot.css') %}
+    #}
+  {% endblock %}
+
+  {# Uncomment if you want some slightly faster renders
+  {{ assets.css('head', {'loading': 'inline'}) }}
+  #}
+  
+  {% block javascripts %}
+    <script src="{{ url('plugin://proposal/assets/anchor.min.js') }}" defer></script>
+    <script src="{{ url('plugin://proposal/assets/tocbot.js') }}" defer></script>
+    <script>
+     document.addEventListener('DOMContentLoaded',function(e){
+         anchors.options = {
+             placement: 'left',
+             visible: 'hover',
+             icon: ''
+         };
+         anchors.add();
+       tocbot.init({
+           // Where to render the table of contents.
+           tocSelector: '.js-toc',
+           // Where to grab the headings to build the table of contents.
+           contentSelector: 'article',
+           // Which headings to grab inside of the contentSelector element.
+           headingSelector: 'h2, h3',
+       });
+     });
+    </script>
+
+    {# If no proposal acceptance data for this page route, then load stripe js payment stuff... also check if theres a deposit amount defined on the proposal before loading  #}
+
+    {% if proposal is empty %}
+      {% if page.header.deposit %}
+      <script src="https://js.stripe.com/v3/"></script>
+      <script>
+       var stripe = Stripe('{{ config.plugins.proposal.stripe_public_key }}');
+       document.addEventListener('DOMContentLoaded',function(e){
+           var paymentRequest = stripe.paymentRequest({
+               country: '{{ config.plugins.proposal.stripe_country|upper }}',
+               currency: '{{ config.plugins.proposal.stripe_currency|lower }}',
+               total: {
+                   label: 'Deposit',
+                   amount: {{ page.header.deposit * 100 }},
+               },
+           });
+           
+           var elements = stripe.elements();
+           var prButton = elements.create('paymentRequestButton', {
+               paymentRequest: paymentRequest,
+           });
+
+           // Check the availability of the Payment Request API first.
+           paymentRequest.canMakePayment().then(function(result) {
+               if (result) {
+                   prButton.mount('#payment-request-button');
+               } else {
+                   document.getElementById('payment-request-button').style.display = 'none';
+               }
+           });
+
+           paymentRequest.on('token', function(ev) {
+               // Send the token to your server to charge it!
+               fetch('{{ config.plugins.proposal.pay_route }}', {
+                   method: 'POST',
+                   body: JSON.stringify({token: ev.token.id, path: '{{ grav.uri.path }}', amount: '{{ page.header.deposit | number_format(2, '.', '') }}', currency: '{{ config.plugins.proposal.stripe_currency|upper }}'}),
+               })
+               .then(function(response) {
+                   // Report to the browser that the payment was successful, prompting it
+                   // to close the browser payment interface.
+                   if (response.ok) {
+                       ev.complete('success');
+                       document.getElementById('if-accept-pay-deposit').style.textDecoration = 'line-through';
+                       document.getElementById('payment-request-button').style.display = 'none';
+                       document.getElementById('thankyou-deposit').style.display = '';
+                       document.querySelector('.accepted-ribbon').style.display = '';
+                   } else {
+                       // handle failed HTTP response
+                       ev.complete('fail');
+                   }
+               })
+               .catch(function() {
+                   // Report to the browser that the payment failed, prompting it to
+                   // re-show the payment interface, or show an error message and close
+                   // the payment interface.
+                   ev.complete('fail');
+               });
+           });
+       });
+      </script>
+      {% endif %}
+    {% endif %}
+  {% endblock %}
+  
+  {% endblock head %}
+</head>
+<body>
+  <main>
+    {% block content %}
+      <section class="proposal-start"{% if page.header.cover_image %} style="background-image: url('{{ page.url }}/{{ page.header.cover_image|url_encode }}');"{% elseif page.header.cover_image_url %} style="background-image: url('{{ page.header.cover_image_url }}');"{% endif %}>
+        <h1>{{ page.title }}</h1>
+      </section>
+  
+      <div class="proposal-scroll"></div>
+  
+      <nav class="js-toc is-position-fixed"></nav>
+
+      <article>
+        {{ page.content }}
+        {% if proposal %}
+          <h2 id="next">What's next?</h2>
+          <div class="accepted-ribbon">Accepted</div>
+          <p><del>If you accept this proposal, please <mark>make a deposit of {{ currency_symbol }}{{ page.header.deposit | number_format(0, '.', ',') }}</mark> so that we can make a start on the work outlined.</del></p>
+          <p>Thank you! We received the deposit of <mark>{{ currency_symbol }}{{ page.header.deposit | number_format(0, '.', ',') }}</mark> on {{ proposal.paid_on | date(config.system.pages.dateformat.short) }} 👍</p>
+        {% else %}
+          <h2 id="next">What's next?</h2>
+          <div class="accepted-ribbon" style="display:none;">Accepted</div>
+          <p id="if-accept-pay-deposit">If you accept this proposal, <mark><em>please make a deposit of {{ currency_symbol }}{{ page.header.deposit | number_format(0, '.', ',') }}</em></mark> so that we can make a start on the work outlined.</p>
+          <div id="payment-request-button"></div>
+          <p id="thankyou-deposit" style="display:none;">Thank you! We just received the deposit of <mark>{{ currency_symbol }}{{ page.header.deposit | number_format(0, '.', ',') }}</mark> 👍</p> 
+        {% endif %}
+      </article>      
+    {% endblock content %}
+  </main>
+</body>
+</html>
+{% endspaceless %}

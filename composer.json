@@ -1,0 +1,5 @@
+{
+    "require": {
+        "omnipay/stripe": "^2.4"
+    }
+}

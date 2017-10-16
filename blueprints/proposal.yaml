@@ -1,0 +1,62 @@
+title: Proposal
+
+rules:
+  slug:
+    pattern: '[a-zA-Zа-яA-Я0-9_\-]+'
+    min: 1
+    max: 200
+
+form:
+  validation: loose
+  fields:
+
+    tabs:
+      type: tabs
+      active: 1
+
+      fields:
+        content:
+          type: tab
+          title: 'Proposal'
+
+          fields:
+            header.fieldset:
+              type: fieldset
+              title: 'Proposal Options'
+              help: 
+              info: Choose the deposit amount 💳 cover image 🖼️ and more...
+              text: 
+              icon: briefcase
+              collapsed: true     # Initial state of fieldset (see collapsible option)
+              collapsible: true    # Whether one can expand the fieldset or not 
+              fields:
+                header.title:
+                  type: text
+                  label: Title
+                  help: This gets shown on top of the cover image
+                header.cover_image:
+                  label: Cover Image 🖼️
+                  help: Choose an uploaded image
+                  type: pagemediaselect
+                header.deposit:
+                  type: text
+                  label: Deposit Amount 💳
+                  help: Choose an amount (only whole numbers please)
+                  validate:
+                    required: true
+                    type: int
+                header.access:
+                  type: array
+                  label: User Access 👥
+                  help: Define what users can access this proposal
+                  placeholder_key: 'admin.login'
+                  placeholder_value: 'true'
+                  validate:
+                    required: true
+                  
+            content:
+              type: markdown
+
+            uploads:
+              type: pagemedia
+              label: Proposal Media
