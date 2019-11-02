@@ -1,5 +1,5 @@
 name: Proposal
-version: 1.0.0
+version: 1.0.1
 description: "[Create online sales proposals for free](https://github.com/jackbrycesmith/grav-plugin-proposal) & let the recipient accept by paying a 💳 deposit with Stripe."
 icon: briefcase
 author:
@@ -9,7 +9,7 @@ author:
 homepage: https://github.com/jackbrycesmith/grav-plugin-proposal
 keywords: grav, plugin, proposal, sales, markdown, stripe
 bugs: https://github.com/jackbrycesmith/grav-plugin-proposal/issues
-docs: https://github.com/jackbrycesmith/grav-plugin-proposal/blob/develop/README.md
+docs: https://github.com/jackbrycesmith/grav-plugin-proposal/blob/master/README.md
 license: MIT
 
 form:
