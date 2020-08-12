@@ -98,4 +98,4 @@ stripe_currency: gbp
 
 ![admin-md-table](https://user-images.githubusercontent.com/13235268/31609175-fe8d851a-b26a-11e7-910c-25b4f2ef3907.gif)
 
-**🌟 Made by [Jack Bryce-Smith](https://jack.bryce-smith.com) at [Markage Ltd](https://markage.uk).**
+**🌟 Made by [Jack Bryce-Smith](https://jack.bryce-smith.com) at [Markage Ltd](https://markage.ltd).**
